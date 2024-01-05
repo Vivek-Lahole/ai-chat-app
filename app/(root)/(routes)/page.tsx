@@ -3,8 +3,9 @@ import { UserButton } from "@clerk/nextjs";
 
 const RootPage = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="p-4 space-y-4 h-full">
+    <div className="p-3 space-y-4 h-full">
       <SearchInput />
+      {children}
     </div>
   );
 };
