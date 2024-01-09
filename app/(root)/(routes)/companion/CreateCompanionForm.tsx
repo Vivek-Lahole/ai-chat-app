@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { category, Companion } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -32,6 +33,7 @@ import {
   MODEL_COMPANION_INSTRUCTION,
   MODEL_CHAT,
 } from "../../../../public/data/CompanionSeed";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -62,10 +64,11 @@ const CreateCompanionForm = ({
   initialData: Companion | null;
 }) => {
   const { toast } = useToast();
+  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: initialData || {
       name: "",
       description: "",
       instructions: "",
@@ -75,11 +78,31 @@ const CreateCompanionForm = ({
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      if (initialData) {
+        await axios.patch(`/api/companion/${initialData.id}`, values);
+        toast({
+          variant: "success",
+          title: `${"Companion Edited Succesfully!"}`,
+          description: "Succesfully Edited Companion!",
+        });
+      } else {
+        await axios.post(`/api/companion`, values);
+        toast({
+          variant: "success",
+          title: `${"Companion Created Succesfully!"}`,
+          description: "Hurraaay! your campanion is created!",
+        });
+      }
+      router.refresh();
+      router.push("/");
     } catch (error) {
-      toast({});
+      toast({
+        variant: "destructive",
+        title: "Something went Wrong!",
+        description: `${error}`,
+      });
     }
     console.log(values);
   }
@@ -261,17 +284,6 @@ const CreateCompanionForm = ({
               size="lg"
               disabled={isLoading}
               className="hover:scale-90 transition"
-              onClick={() => {
-                toast({
-                  variant: "success",
-                  title: `${
-                    initialData
-                      ? "Comapanion Edited Succesfully"
-                      : "Companion Created Succesfully!"
-                  }`,
-                  description: "Hurraaay! your campanion is created!",
-                });
-              }}
             >
               {initialData ? "Edit your companion" : "Create your companion"}
               <Sparkles className="w-4 h-4 ml-2" />
