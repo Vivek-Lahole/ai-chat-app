@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs";
+import { auth, currentUser, redirectToSignIn } from "@clerk/nextjs";
 import prisma from "@/lib/Prisma";
 
 export async function PATCH(
@@ -30,7 +30,7 @@ export async function PATCH(
       return new NextResponse("Missing required fields", { status: 400 });
     }
     const companion = await prisma.companion.update({
-      where: { id: params.companionID },
+      where: { id: params.companionID, userId: user.id },
       data: {
         categoryId,
         userId: user.id,
@@ -46,5 +46,32 @@ export async function PATCH(
   } catch (error) {
     console.log("[COMPANION_PATCH]", error);
     return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { companionID: string } }
+) {
+  const { userId } = auth();
+
+  if (!userId) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  if (!params.companionID) {
+    return new NextResponse("Compannion Id is required!", { status: 500 });
+  }
+
+  try {
+    await prisma.companion.delete({
+      where: {
+        id: params.companionID,
+        userId: userId,
+      },
+    });
+    return NextResponse.json({ status: "succes" });
+  } catch (err) {
+    return new NextResponse("Internal Server Error");
   }
 }

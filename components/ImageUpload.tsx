@@ -4,9 +4,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CldUploadButton } from "next-cloudinary";
 
-import { Button } from "@/components/ui/button";
-import { ImageIcon, X } from "lucide-react";
-
 interface ImageUploadProps {
   value: string;
   onChange: (src: string) => void;
@@ -51,7 +48,7 @@ export const ImageUpload = ({
             justify-center
           "
         >
-          <div className="relative h-80 w-80">
+          <div className="relative h-60 w-60">
             <Image
               fill
               alt="Upload"

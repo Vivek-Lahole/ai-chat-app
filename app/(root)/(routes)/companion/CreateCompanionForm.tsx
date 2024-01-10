@@ -34,6 +34,8 @@ import {
   MODEL_CHAT,
 } from "../../../../public/data/CompanionSeed";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { HashLoader } from "react-spinners";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -65,6 +67,7 @@ const CreateCompanionForm = ({
 }) => {
   const { toast } = useToast();
   const router = useRouter();
+  const [loading, setloading] = useState(false);
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,6 +83,7 @@ const CreateCompanionForm = ({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      setloading(true);
       if (initialData) {
         await axios.patch(`/api/companion/${initialData.id}`, values);
         toast({
@@ -104,10 +108,18 @@ const CreateCompanionForm = ({
         description: `${error}`,
       });
     }
-    console.log(values);
+    setloading(false);
   }
 
   const isLoading = form.formState.isSubmitting;
+
+  if (loading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <HashLoader color="white" />
+      </div>
+    );
+  }
 
   return (
     <div className="h-full p-4 m-5 space-y-2 mx-auto">
@@ -126,7 +138,7 @@ const CreateCompanionForm = ({
             <Separator className="bg-primary/10" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto">
             <FormField
               name="src"
               render={({ field }) => (

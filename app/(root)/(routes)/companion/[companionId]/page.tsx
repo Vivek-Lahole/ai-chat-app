@@ -23,7 +23,7 @@ const CompanionIdPage = async ({ params }: CompanionIdPageProps) => {
   const companion = await prisma.companion.findUnique({
     where: {
       id: params.companionId,
-      userId,
+      userId: userId,
     },
   });
 

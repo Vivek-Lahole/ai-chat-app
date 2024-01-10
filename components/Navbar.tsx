@@ -15,7 +15,7 @@ const font = Poppins({
 
 const Navbar = () => {
   return (
-    <div className="h-16 w-full flex justify-between items-center py-4 px-4 fixed bg-secondary">
+    <div className="h-16 w-full flex justify-between items-center py-4 px-4 fixed bg-secondary z-30">
       <div className="flex items-center">
         <MobileSidebar />
         <div className="flex space-x-2 p-2">
@@ -36,12 +36,8 @@ const Navbar = () => {
         </div>
       </div>
       <div className="gap-x-3 flex items-center">
-        <Button className="sm" variant={"premium"}>
-          Upgrade
-          <Sparkles className="w-4 h-4 ml-2 text-white fill-white" />
-        </Button>
         <ModeToggle />
-        <UserButton />
+        <UserButton afterSignOutUrl="/" />
       </div>
     </div>
   );
