@@ -64,6 +64,7 @@ Introducing our AI-Chat-App where users can personalize their chat experience by
 - Migration to Supabase Open-Source Database
 - Admin and User based Model
 - Migration to Hugging Face LLM
+- Containerize Codebase with Docker
 
 <!-- CONTACT -->
 

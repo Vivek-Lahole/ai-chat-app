@@ -1,7 +1,7 @@
 "use client";
 
 // import { useCompletion } from "ai/react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Companion, Message } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { ChatHeader } from "@/components/CompanionChat/ChatHeader";
@@ -55,30 +55,35 @@ export const ChatClient = ({ companion }: ChatClientProps) => {
     },
   });
 
-  const { input, isLoading, handleInputChange, handleSubmit, setInput } =
-    useCompletion({
-      api: `/api/chat/${companion.id}`,
-      onFinish(_prompt: any, completion: any) {
-        const systemMessage: ChatMessageProps = {
-          role: "companion",
-          content: completion,
-        };
+  const {
+    completion,
+    input,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+    stop,
+    setInput,
+    setCompletion,
+  } = useCompletion({
+    api: `/api/chat/${companion.id}`,
+  });
 
-        setMessages((current) => [...current, systemMessage]);
-        setInput("");
-
-        router.refresh();
-      },
-    });
+  useEffect(() => {
+    console.log("Completion", completion);
+    const companionMessage: ChatMessageProps = {
+      role: "companion",
+      content: completion,
+    };
+    setMessages((current) => [...current, companionMessage]);
+    setInput("");
+  }, [completion]);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     const userMessage: ChatMessageProps = {
       role: "user",
       content: input,
     };
-
     setMessages((current) => [...current, userMessage]);
-
     handleSubmit(e);
   };
 

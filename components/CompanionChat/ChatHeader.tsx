@@ -24,7 +24,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface ChatHeaderProps {
   companion: Companion & {
-    message: Message[];
+    messages: Message[];
     _count: {
       messages: number;
     };
