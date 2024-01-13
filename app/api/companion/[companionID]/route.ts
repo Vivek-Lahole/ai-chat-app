@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser, redirectToSignIn } from "@clerk/nextjs";
 import prisma from "@/lib/Prisma";
+import { Configuration, OpenAIApi } from "openai-edge";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 
 export async function PATCH(
   req: Request,
@@ -70,7 +72,7 @@ export async function DELETE(
         userId: userId,
       },
     });
-    return NextResponse.json({ status: "succes" });
+    return NextResponse.json({ status: "success" });
   } catch (err) {
     return new NextResponse("Internal Server Error");
   }

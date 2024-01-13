@@ -14,7 +14,7 @@ const ChatPage = async ({ params }: { params: { chatID: string } }) => {
     },
 
     include: {
-      Message: {
+      messages: {
         orderBy: {
           createdAt: "asc",
         },
@@ -24,7 +24,7 @@ const ChatPage = async ({ params }: { params: { chatID: string } }) => {
       },
       _count: {
         select: {
-          Message: true,
+          messages: true,
         },
       },
     },

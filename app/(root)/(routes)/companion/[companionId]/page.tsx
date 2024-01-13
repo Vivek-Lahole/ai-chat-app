@@ -3,9 +3,6 @@ import { auth, redirectToSignIn } from "@clerk/nextjs";
 
 import prisma from "@/lib/Prisma";
 import CreateCompanionForm from "../CreateCompanionForm";
-// import { checkSubscription } from "@/lib/subscription";
-
-// import { CompanionForm } from "./components/companion-form";
 
 interface CompanionIdPageProps {
   params: {

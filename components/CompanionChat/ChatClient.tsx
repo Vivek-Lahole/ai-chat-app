@@ -1,92 +1,145 @@
-// "use client";
+"use client";
 
 // import { useCompletion } from "ai/react";
 import { FormEvent, useState } from "react";
 import { Companion, Message } from "@prisma/client";
 import { useRouter } from "next/navigation";
-
-// import { ChatForm } from "@/components/chat-form";
 import { ChatHeader } from "@/components/CompanionChat/ChatHeader";
 import Image from "next/image";
-// import { ChatMessages } from "@/components/chat-messages";
-// import { ChatMessageProps } from "@/components/chat-message";
+import { Textarea } from "../ui/textarea";
+import { SendHorizonal } from "lucide-react";
+import { Button } from "../ui/button";
+import ChatMessages from "./ChatMessages";
+import { useChat, useCompletion } from "ai/react";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { ChatMessageProps } from "./Message";
 
-import { Separator } from "@/components/ui/separator";
-
-export const ChatClient = ({
-  companion,
-}: {
+interface ChatClientProps {
   companion: Companion & {
     messages: Message[];
     _count: {
       messages: number;
     };
   };
-}) => {
+}
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Empty Message",
+  }),
+});
+
+export const ChatClient = ({ companion }: ChatClientProps) => {
   const router = useRouter();
-  //   const [messages, setMessages] = useState<ChatMessageProps[]>(
-  //     companion.messages
-  //   );
+  const [messages, setMessages] = useState<ChatMessageProps[]>(
+    companion.messages
+  );
 
-  //   const { input, isLoading, handleInputChange, handleSubmit, setInput } =
-  // useCompletion({
-  //   api: `/api/chat/${companion.id}`,
-  //   onFinish(_prompt, completion) {
-  //     const systemMessage: ChatMessageProps = {
-  //       role: "system",
-  //       content: completion,
-  //     };
+  // console.log(messages);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
 
-  //     setMessages((current) => [...current, systemMessage]);
-  //     setInput("");
+  const { input, isLoading, handleInputChange, handleSubmit, setInput } =
+    useCompletion({
+      api: `/api/chat/${companion.id}`,
+      onFinish(_prompt: any, completion: any) {
+        const systemMessage: ChatMessageProps = {
+          role: "companion",
+          content: completion,
+        };
 
-  //     router.refresh();
-  //   },
-  // });
+        setMessages((current) => [...current, systemMessage]);
+        setInput("");
 
-  //   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-  //     const userMessage: ChatMessageProps = {
-  //       role: "user",
-  //       content: input,
-  //     };
+        router.refresh();
+      },
+    });
 
-  //     setMessages((current) => [...current, userMessage]);
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const userMessage: ChatMessageProps = {
+      role: "user",
+      content: input,
+    };
 
-  //     handleSubmit(e);
-  //   };
+    setMessages((current) => [...current, userMessage]);
+
+    handleSubmit(e);
+  };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 h-full w-full p-4 space-y-2">
-      <div className="border-r p-4 border-primary/10 rounded-lg transition flex-col space-y-4 md:col-span-1 lg:col-span-1 hidden md:flex items-center">
-        <div className="relative h-60 w-60 mx-auto mt-10">
+    <div className="flex h-screen w-full p-2 space-y-2">
+      <div className="border-r p-4 border-primary/10 rounded-lg transition flex-col space-y-4 md:col-span-1 lg:col-span-1 hidden md:block items-center">
+        <div className="relative h-64 w-64 mx-auto mt-10 border-4 border-dashed border-primary/10 ">
           <Image
             fill
-            alt="Upload"
+            alt="companion Image"
             src={companion.src}
-            className="rounded-lg object-cover w-full h-full"
+            className="rounded-lg object-cover w-full h-full p-4"
           />
         </div>
-        <h3 className="text-2xl font-semibold tracking-tight text-center">
+        <h3 className="text-2xl font-semibold tracking-tight text-center underline">
           {companion.name}
         </h3>
         <p className="leading-7 [&:not(:first-child)]:mt-6 p-3">
           Description : {companion.description}
         </p>
       </div>
-      <div className="flex flex-col md:col-span-2 lg:col-span-3">
+      <div className="flex flex-1 flex-col ">
         <ChatHeader companion={companion} />
+        <div className="flex-1 p-2 overflow-y-auto">
+          <ChatMessages
+            companion={companion}
+            isLoading={isLoading}
+            messages={messages}
+          />
+        </div>
+        <div className="flex justify-center">
+          <Form {...form}>
+            <form
+              onSubmit={onSubmit}
+              className="flex-1 flex items-center justify-center mt-1"
+            >
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Textarea
+                        disabled={isLoading}
+                        className="w-full flex-1"
+                        placeholder="Type your message here....."
+                        {...field}
+                        onChange={handleInputChange}
+                        value={input}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" variant={"ghost"} disabled={isLoading}>
+                <SendHorizonal className="h-6 w-6" />
+              </Button>
+            </form>
+          </Form>
+        </div>
       </div>
-      {/* <ChatMessages
-        companion={companion}
-        isLoading={isLoading}
-        messages={messages}
-      />
-      <ChatForm
-        isLoading={isLoading}
-        input={input}
-        handleInputChange={handleInputChange}
-        onSubmit={onSubmit}
-      /> */}
     </div>
   );
 };

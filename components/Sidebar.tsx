@@ -3,10 +3,25 @@
 import { cn } from "@/lib/utils";
 import { Home, Plus, Settings, Info } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { AuthorCard } from "./AuthorCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 const Sidebar = () => {
   const pathName = usePathname();
   const router = useRouter();
+  const [state, setState] = useState(false);
 
   const routes = [
     {
@@ -59,11 +74,28 @@ const Sidebar = () => {
           <div
             className={`fixed bottom-3 text-muted-foreground text-xs group p-3  font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition
               flex flex-col gap-y-2 items-center justify-center`}
+            onClick={(prev) => setState(!prev)}
           >
-            <Info className="h-5 w-5" />
-            <a href="https://www.linkedin.com/in/vivek-lahole-4b62581b9/">
-              {"Author"}
-            </a>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <div className="flex flex-col items-center justify-center space-y-2">
+                  <Info className="h-5 w-5" />
+                  <span>Author</span>
+                </div>
+                {/* <Button variant="ghost">Author</Button> */}
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogDescription>
+                    <AuthorCard />
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  {/* <AlertDialogCancel>Close</AlertDialogCancel> */}
+                  <AlertDialogAction>Close</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>

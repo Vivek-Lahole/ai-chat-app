@@ -14,17 +14,19 @@ const RootPage = async ({
   const query = searchParams?.query;
   const categoryId = searchParams?.categoryId;
 
-  const companionData = await prisma.companion.findMany({
-    where: {
-      categoryId: categoryId,
-      name: {
-        search: query,
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const companionData = query
+    ? await prisma.companion.findMany({
+        where: {
+          categoryId: categoryId,
+          name: {
+            search: query?.split(" ").join(":* & ") + ":*",
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      })
+    : await prisma.companion.findMany({});
 
   const categories = await prisma.category.findMany();
   return (

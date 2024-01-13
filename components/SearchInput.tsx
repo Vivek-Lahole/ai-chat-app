@@ -11,9 +11,6 @@ const SearchInput = () => {
   const searchParams = useSearchParams();
   const pathName = usePathname();
 
-  const categoryID = searchParams.get("categoryID");
-  const name = searchParams.get("name");
-
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
@@ -22,9 +19,7 @@ const SearchInput = () => {
       params.delete("query");
     }
     router.replace(`${pathName}?${params.toString()}`);
-    console.log(`"route " + ${pathName}?${params.toString()}`);
-    console.log("window " + window.location);
-  }, 300);
+  }, 200);
 
   return (
     <div className="relative">

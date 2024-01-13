@@ -42,11 +42,11 @@ export const Companions = ({ data }: CompanionsProps) => {
       {data.map((item) => (
         <Card
           key={item.name}
-          className="bg-primary/10 rounded-xl cursor-pointer hover:opacity-50 transition border-0 "
+          className="bg-primary/10 rounded-xl cursor-pointer hover:opacity-75 transition border-0 "
         >
           <Link href={`/chat/${item.id}`}>
             <CardHeader className="flex items-center justify-center text-center text-muted-foreground">
-              <div className="relative w-32 h-32">
+              <div className="relative w-36 h-36">
                 <Image
                   src={item.src}
                   fill
@@ -58,7 +58,7 @@ export const Companions = ({ data }: CompanionsProps) => {
               <p className="text-xs">{item.description}</p>
             </CardHeader>
             <CardFooter className="flex items-center justify-between text-xs text-muted-foreground">
-              <p>creted by {item.userName}</p>
+              <p>creted by @{item.userName}</p>
               <p>{formatCustomDate(item.updatedAt)}</p>
             </CardFooter>
           </Link>
