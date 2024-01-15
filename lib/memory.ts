@@ -16,19 +16,11 @@ class MemoryManager {
 
   public constructor() {
     this.history = Redis.fromEnv();
-    const pinecone = new Pinecone({
+    this.vectorDBClient = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!,
       environment: process.env.PINECONE_ENVIRONMENT!,
     });
-    this.vectorDBClient = pinecone;
   }
-
-  // public async init() {
-  //   await this.vectorDBClient.init({
-  //     apiKey: process.env.PINECONE_API_KEY!,
-  //     environment: process.env.PINECONE_ENVIRONMENT!,
-  //   });
-  // }
 
   public async vectorSearch(
     recentChatHistory: string,
@@ -57,7 +49,6 @@ class MemoryManager {
   public static async getInstance(): Promise<MemoryManager> {
     if (!MemoryManager.instance) {
       MemoryManager.instance = new MemoryManager();
-      // await MemoryManager.instance.init();
     }
     return MemoryManager.instance;
   }

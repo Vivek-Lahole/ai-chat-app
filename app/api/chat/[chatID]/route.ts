@@ -56,13 +56,9 @@ export async function POST(
       },
     });
 
-    // XXX Companion name passed here. Can use as a key to get backstory, chat history etc.
-    const name = companion?.id;
-    const companionFileName = name + ".txt";
-
-    console.log("prompt: ", prompt);
-
-    const instructions = companion?.instructions;
+    const name: string = companion?.id;
+    const companionFileName: string = name + ".txt";
+    const instructions: string = companion?.instructions;
     const seedchat: string = companion ? companion.seed : "";
 
     const companionKey = {
@@ -74,7 +70,7 @@ export async function POST(
 
     const records = await memoryManager.readLatestHistory(companionKey);
     if (records.length === 0) {
-      await memoryManager.seedChatHistory(seedchat, "\n\n", companionKey);
+      await memoryManager.seedChatHistory(seedchat, "\n", companionKey);
     }
 
     await memoryManager.writeToHistory("User: " + prompt + "\n", companionKey);
@@ -92,6 +88,7 @@ export async function POST(
         .map((doc: any) => doc.pageContent)
         .join("\n");
     }
+    console.log("relevantHistory", relevantHistory);
 
     const { stream, handlers } = LangChainStream();
 
@@ -99,17 +96,15 @@ export async function POST(
       streaming: true,
       modelName: "gpt-3.5-turbo-16k",
       openAIApiKey: process.env.OPENAI_API_KEY,
-      // callbackManager: CallbackManager.fromHandlers(handlers),
-      // callbacks:call
     });
     model.verbose = true;
 
     const chainPrompt = PromptTemplate.fromTemplate(`
-    You are ${name} and are currently talking to ${user.firstName}.
+    You are ${companion.name} and are currently talking to ${user.firstName}.
 
     ${instructions}
 
-    You reply with answers that range from one sentence to one paragraph and with some details. Reply only within 1000 characters
+    You reply with answers that range from one sentence to one paragraph and with some details. Reply only within 1000 characters and dont generate name prefix before message
 
     Below are relevant details about ${name}'s past
     ${relevantHistory}
@@ -118,12 +113,12 @@ export async function POST(
 
   ${recentChatHistory}`);
 
-    console.log("Reached Here");
-
     const chain = new LLMChain({
       llm: model,
       prompt: chainPrompt,
     });
+
+    console.log(recentChatHistory);
 
     const result = await chain
       .call({
@@ -156,7 +151,7 @@ export async function POST(
     );
     console.log("chatHistoryRecord", chatHistoryRecord);
 
-    return NextResponse.json(result);
+    return NextResponse.json(result!.text);
   } catch (err) {
     console.log("RESPONSE_ERROR", err);
   }

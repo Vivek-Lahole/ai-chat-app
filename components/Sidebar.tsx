@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Home, Plus, Settings, Info } from "lucide-react";
+import { Home, Plus, Settings, Info, BellPlus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AuthorCard } from "./AuthorCard";
@@ -28,36 +28,31 @@ const Sidebar = () => {
       icon: Home,
       label: "Home",
       href: "/",
-      pro: false,
     },
     {
       icon: Plus,
       label: "Create",
       href: "/companion/new",
-      pro: true,
     },
     {
-      icon: Settings,
-      label: "Settings",
-      href: "/settings",
-      pro: false,
+      icon: BellPlus,
+      label: "Updates",
+      href: "/updates",
     },
   ];
 
-  const onNavigate = (url: string, pro: boolean) => {
-    if (pro) {
-    }
+  const onNavigate = (url: string) => {
     return router.push(url);
   };
 
   return (
-    <div className="space-y-4 bg-secondary h-full text-primary shadow-md">
+    <div className="space-y-4 bg-secondary h-full text-primary ">
       <div className="flex-1 p-3 flex justify-center">
         <div className="space-y-2">
           {routes.map((ele) => (
             <div
               onClick={() => {
-                onNavigate(ele.href, ele.pro);
+                onNavigate(ele.href);
               }}
               key={ele.href}
               className={cn(

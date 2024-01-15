@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Sparkles } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { ImageUpload } from "@/components/ImageUpload";
 import { Separator } from "@/components/ui/separator";
@@ -32,10 +31,16 @@ import { Input } from "@/components/ui/input";
 import {
   MODEL_COMPANION_INSTRUCTION,
   MODEL_CHAT,
+  BACK_STORY,
 } from "../../../../public/data/CompanionSeed";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { HashLoader } from "react-spinners";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { Document } from "langchain/document";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { PineconeStore } from "langchain/vectorstores/pinecone";
+import { CharacterTextSplitter } from "langchain/text_splitter";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -56,6 +61,9 @@ const formSchema = z.object({
   categoryId: z.string().min(1, {
     message: "Category is required",
   }),
+  backstory: z.string().min(200, {
+    message: "Seed requires at least 200 characters.",
+  }),
 });
 
 const CreateCompanionForm = ({
@@ -68,7 +76,6 @@ const CreateCompanionForm = ({
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setloading] = useState(false);
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
@@ -77,8 +84,16 @@ const CreateCompanionForm = ({
       instructions: "",
       seed: "",
       src: "",
+      backstory: "",
       categoryId: undefined,
     },
+  });
+
+  // code to add in vector database
+  const splitter = new CharacterTextSplitter({
+    separator: " ",
+    chunkSize: 200,
+    chunkOverlap: 50, //TODO: adjust both chunk size and chunk overlap later
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -237,18 +252,22 @@ const CreateCompanionForm = ({
             <div>
               <h3 className="text-lg font-medium">Configuration</h3>
               <p className="text-sm text-muted-foreground">
-                Detailed instructions for AI Behaviour
+                Detailed instructions for character Behaviour
               </p>
             </div>
             <Separator className="bg-primary/10" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <FormField
               name="instructions"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Instructions</FormLabel>
+                  <FormLabel>Instructions for your character</FormLabel>
+                  <FormDescription>
+                    Describe how your character should behave and give
+                    appropiate instructions to him.
+                  </FormDescription>
                   <FormControl>
                     <Textarea
                       disabled={isLoading}
@@ -258,10 +277,29 @@ const CreateCompanionForm = ({
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="backstory"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Backstory of your character</FormLabel>
                   <FormDescription>
-                    Describe in detail your companion & apos;s backstory and
-                    relevant details.
+                    Write a small but detailed backstory for your custom
+                    character
                   </FormDescription>
+                  <FormControl>
+                    <Textarea
+                      disabled={isLoading}
+                      rows={10}
+                      className="bg-background resize-none"
+                      placeholder={BACK_STORY}
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -272,6 +310,10 @@ const CreateCompanionForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Example Conversation</FormLabel>
+                  <FormDescription>
+                    Write couple of examples of a you chatting with your custom
+                    charater, write expected answers to train your character
+                  </FormDescription>
                   <FormControl>
                     <Textarea
                       disabled={isLoading}
@@ -281,11 +323,6 @@ const CreateCompanionForm = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Write couple of examples of a you chatting with your AI
-                    companion, write expected answers to train your Ai
-                    companion.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
