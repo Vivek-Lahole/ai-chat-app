@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import ModeToggle from "./ui/ModeToggle";
 import MobileSidebar from "../components/MobileSidebar";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 const font = Poppins({
   weight: "600",
@@ -20,7 +21,13 @@ const Navbar = () => {
         <MobileSidebar />
         <div className="flex space-x-2 p-2">
           <Link href={"/"} className="flex">
-            <MessageSquareText className="w-8 h-8 m-2" />
+            <Image
+              src={"/logo1.svg"}
+              alt="logo"
+              width={50}
+              height={50}
+              className="mx-2"
+            />
             <h1
               className={cn(
                 "hidden md:block text-primary text-xl md:text-3xl font-semibold ",

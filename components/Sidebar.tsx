@@ -77,7 +77,6 @@ const Sidebar = () => {
                   <Info className="h-5 w-5" />
                   <span>Author</span>
                 </div>
-                {/* <Button variant="ghost">Author</Button> */}
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
@@ -86,7 +85,6 @@ const Sidebar = () => {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  {/* <AlertDialogCancel>Close</AlertDialogCancel> */}
                   <AlertDialogAction>Close</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

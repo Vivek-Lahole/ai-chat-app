@@ -36,11 +36,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { HashLoader } from "react-spinners";
-import { Pinecone } from "@pinecone-database/pinecone";
-import { Document } from "langchain/document";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { CharacterTextSplitter } from "langchain/text_splitter";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -62,7 +57,7 @@ const formSchema = z.object({
     message: "Category is required",
   }),
   backstory: z.string().min(200, {
-    message: "Seed requires at least 200 characters.",
+    message: "Backstory requires at least 200 characters.",
   }),
 });
 
@@ -89,13 +84,6 @@ const CreateCompanionForm = ({
     },
   });
 
-  // code to add in vector database
-  const splitter = new CharacterTextSplitter({
-    separator: " ",
-    chunkSize: 200,
-    chunkOverlap: 50, //TODO: adjust both chunk size and chunk overlap later
-  });
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setloading(true);
@@ -108,20 +96,22 @@ const CreateCompanionForm = ({
         });
       } else {
         await axios.post(`/api/companion`, values);
+
         toast({
-          variant: "success",
+          variant: "default",
           title: `${"Companion Created Succesfully!"}`,
           description: "Hurraaay! your campanion is created!",
         });
       }
-      router.refresh();
       router.push("/");
+      router.refresh();
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Something went Wrong!",
         description: `${error}`,
       });
+      console.log("ERROR", error);
     }
     setloading(false);
   }

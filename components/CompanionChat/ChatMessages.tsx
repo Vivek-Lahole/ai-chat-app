@@ -43,7 +43,6 @@ const ChatMessages = ({
         if (!message.content) {
           return;
         }
-        console.log("message content", message.content);
         return (
           <Message
             key={message.content}

@@ -23,6 +23,7 @@ model Companion {
   name         String @db.Text
   description  String
   instructions String @db.Text
+  backstory    String @db.Text
   seed         String @db.Text
 
   createdAt DateTime @default(now())

@@ -1,7 +1,7 @@
 import { OpenAI } from "@langchain/openai";
 import dotenv from "dotenv";
 import { LLMChain } from "langchain/chains";
-import { StreamingTextResponse, LangChainStream } from "ai";
+import { StreamingTextResponse, LangChainStream, OpenAIStream } from "ai";
 import clerk from "@clerk/clerk-sdk-node";
 import { CallbackManager } from "langchain/callbacks";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -57,9 +57,9 @@ export async function POST(
     });
 
     const name: string = companion?.id;
-    const companionFileName: string = name + ".txt";
+    const companionFileName: string = companion?.name;
     const instructions: string = companion?.instructions;
-    const seedchat: string = companion ? companion.seed : "";
+    const seedchat: string = companion?.seed;
 
     const companionKey = {
       companionName: name!,
@@ -74,7 +74,9 @@ export async function POST(
     }
 
     await memoryManager.writeToHistory("User: " + prompt + "\n", companionKey);
-    let recentChatHistory = await memoryManager.readLatestHistory(companionKey);
+    const recentChatHistory = await memoryManager.readLatestHistory(
+      companionKey
+    );
 
     // query Pinecone
     const similarDocs = await memoryManager.vectorSearch(
@@ -82,12 +84,11 @@ export async function POST(
       companionFileName
     );
 
-    let relevantHistory = "";
-    if (!!similarDocs && similarDocs.length !== 0) {
-      relevantHistory = similarDocs
-        .map((doc: any) => doc.pageContent)
-        .join("\n");
-    }
+    console.log("SImilarDOcs", similarDocs);
+    const relevantHistory: string =
+      !!similarDocs && similarDocs.length !== 0
+        ? similarDocs.map((doc: any) => doc.pageContent).join("\n")
+        : "";
     console.log("relevantHistory", relevantHistory);
 
     const { stream, handlers } = LangChainStream();
@@ -104,21 +105,24 @@ export async function POST(
 
     ${instructions}
 
-    You reply with answers that range from one sentence to one paragraph and with some details. Reply only within 1000 characters and dont generate name prefix before message
-
-    Below are relevant details about ${name}'s past
+    You reply with answers that range from one sentence to one paragraph and with some details.
+    Reply only within 500 characters 
+    Below are relevant details about ${companion.name}
     ${relevantHistory}
   
-    Below is a relevant conversation history
+    Below is a relevant conversation history between ${user.firstName} and ${companion.name}
 
-  ${recentChatHistory}`);
+    ${recentChatHistory}
+    
+    DON'T let user feel you are an AI model , response with a little bit of human touch in response
+    and DO NOT generate name prefix of ${companion.name} before response
+    like ${companion.name} : givve only plain response
+    `);
 
     const chain = new LLMChain({
       llm: model,
       prompt: chainPrompt,
     });
-
-    console.log(recentChatHistory);
 
     const result = await chain
       .call({
@@ -128,6 +132,7 @@ export async function POST(
       .catch(console.error);
 
     console.log("result is here", result);
+    console.log("stream is here", stream);
 
     if (result) {
       await prisma.companion.update({
