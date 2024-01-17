@@ -11,21 +11,16 @@ import { SendHorizonal } from "lucide-react";
 import { Button } from "../ui/button";
 import ChatMessages from "./ChatMessages";
 import { useChat, useCompletion } from "ai/react";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { ChatMessageProps } from "./Message";
 import { Separator } from "../ui/separator";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ChatClientProps {
   companion: Companion & {
@@ -91,6 +86,14 @@ export const ChatClient = ({ companion }: ChatClientProps) => {
   return (
     <div className="flex h-screen w-full p-2 space-y-2">
       <div className="border-r p-4 border-primary/10 rounded-lg transition flex-col space-y-4 md:col-span-1 lg:col-span-1 hidden md:block items-center max-w-2xl overflow-y-auto">
+        <Alert variant="default">
+          <ExclamationTriangleIcon className="h-4 w-4" />
+          <AlertTitle>Attention</AlertTitle>
+          <AlertDescription>
+            Due to limited Resourses, charater might not reply if question if
+            very descriptive!
+          </AlertDescription>
+        </Alert>
         <div className="relative h-64 w-64 mx-auto mt-10 border-4 border-dashed border-primary/10 ">
           <Image
             fill
