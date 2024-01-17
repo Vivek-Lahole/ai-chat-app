@@ -14,7 +14,7 @@
 
 <br />
 <div align="center">
-  <a href="https://ai-chat-app-dr38.vercel.app/">
+  <a href="https://ai-chat-app-sigma.vercel.app/">
     <img src="readme_images\ai-chat-app-logo.png" alt="Logo" width="100" height="100">
   </a>
 <h3 align="center">ai-chat-app</h3>
