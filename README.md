@@ -23,7 +23,7 @@
     An AI based chat app to create your own virtual charater and have realtime converstaion 
     <br />
     <br />
-    <a href="https://ai-chat-app-dr38.vercel.app/">View Demo</a>
+    <a href="https://ai-chat-app-sigma.vercel.app/">View Demo</a>
   </p>
 </div>
 
