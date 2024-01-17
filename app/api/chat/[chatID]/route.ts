@@ -78,7 +78,6 @@ export async function POST(
       companionKey
     );
 
-    // query Pinecone
     const similarDocs = await memoryManager.vectorSearch(
       recentChatHistory,
       companionFileName
