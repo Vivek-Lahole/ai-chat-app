@@ -30,12 +30,23 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
+![image](https://github.com/Vivek-Lahole/ai-chat-app/assets/82323706/38931775-fbd8-4157-808d-e8a859a2e902)
+![image](https://github.com/Vivek-Lahole/ai-chat-app/assets/82323706/d3c1c0d5-4566-4330-baa9-36d75268e698)
 
-![image](https://github.com/Vivek-Lahole/ai-chat-app/assets/82323706/63b2f53f-504e-4cd7-ba42-a3e30727bbb2)
 
 Introducing our AI-Chat-App where users can personalize their chat experience by creating custom characters. Engage in real-time conversations with these characters, powered by advanced language models like GPT. Additionally, users can craft fictional personalities with minimal input, training custom models for diverse and imaginative interactions. Explore the exciting world of conversational AI and bring your characters to life with our user-friendly platform
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## How to use ?
+
+🌟 Heads up! Just a quick heads-up: our project is in the works and cruising on Free-tier plans at the moment. Your understanding and patience with some functionalities being in the oven are much appreciated!
+
+Now, when it comes to crafting a custom character, think of it as giving life to someone who'll chat up a storm. We're talking about a friendly, interactive buddy who'll really shine based on your instructions and example chats.
+
+To make this character pop, we're embedding their backstory using OpenAI's nifty models and saving it in the Pinecone Vector Database. Feel free to spill the beans with a juicy, detailed backstory!
+
+Keep an eye on the updates page for the latest scoop. Cheers to creating something awesome together! 🌈✨
 
 ## Tech Stack
 
@@ -50,6 +61,11 @@ Introducing our AI-Chat-App where users can personalize their chat experience by
 - Deployment: [Vercel](https://vercel.com/)
 
 <!-- ROADMAP -->
+
+## Behind The Scenes
+
+![image](https://github.com/Vivek-Lahole/ai-chat-app/assets/82323706/758802bb-7578-4652-be4a-957b4dd08795)
+
 
 ## Features
 
