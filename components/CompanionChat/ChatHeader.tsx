@@ -37,7 +37,11 @@ export const ChatHeader = ({ companion }: ChatHeaderProps) => {
   const { toast } = useToast();
   const onDelete = async () => {
     try {
-      await axios.delete(`/api/companion/${companion.id}`);
+      await axios.delete(`/api/companion/${companion.id}`, {
+        data: {
+          name: companion.name,
+        },
+      });
       toast({
         variant: "success",
         description: "Success.",
@@ -83,12 +87,12 @@ export const ChatHeader = ({ companion }: ChatHeaderProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() => router.push(`/companion/${companion.id}`)}
             >
               <Edit className="w-4 h-4 mr-2" />
               Edit
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem onClick={onDelete}>
               <Trash className="w-4 h-4 mr-2" />
               Delete

@@ -16,18 +16,18 @@ model category {
 }
 
 model Companion {
-  id           String @id @default(uuid())
+  id           String   @id @default(uuid())
   userId       String
   userName     String
   src          String
-  name         String @db.Text
+  name         String   @db.Text
   description  String
-  instructions String @db.Text
-  backstory    String @db.Text
-  seed         String @db.Text
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  instructions String   @db.Text
+  backstory    String   @db.Text
+  seed         String   @db.Text
+  vectorID     String[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   category   category  @relation(fields: [categoryId], references: [id])
   categoryId String

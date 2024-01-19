@@ -83,7 +83,6 @@ export async function POST(
       companionFileName
     );
 
-    console.log("SImilarDOcs", similarDocs);
     const relevantHistory: string =
       !!similarDocs && similarDocs.length !== 0
         ? similarDocs.map((doc: any) => doc.pageContent).join("\n")
@@ -115,7 +114,7 @@ export async function POST(
     
     DON'T let user feel you are an AI model , response with a little bit of human touch in response
     and DO NOT generate name prefix of ${companion.name} before response
-    like ${companion.name} : givve only plain response
+    like ${companion.name} : 
     `);
 
     const chain = new LLMChain({
@@ -125,13 +124,10 @@ export async function POST(
 
     const result = await chain
       .call({
-        relevantHistory,
+        relevantHistory: relevantHistory,
         recentChatHistory: recentChatHistory,
       })
       .catch(console.error);
-
-    console.log("result is here", result);
-    console.log("stream is here", stream);
 
     if (result) {
       await prisma.companion.update({

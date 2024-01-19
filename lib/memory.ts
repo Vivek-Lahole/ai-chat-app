@@ -43,6 +43,7 @@ class MemoryManager {
       .catch((err) => {
         console.log("WARNING: failed to get vector search results.", err);
       });
+    console.log(similarDocs);
     return similarDocs;
   }
 

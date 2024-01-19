@@ -91,16 +91,16 @@ const CreateCompanionForm = ({
         await axios.patch(`/api/companion/${initialData.id}`, values);
         toast({
           variant: "success",
-          title: `${"Companion Edited Succesfully!"}`,
-          description: "Succesfully Edited Companion!",
+          title: `${"Character Edited Succesfully!"}`,
+          description: "Succesfully Edited Character!",
         });
       } else {
         await axios.post(`/api/companion`, values);
 
         toast({
           variant: "default",
-          title: `${"Companion Created Succesfully!"}`,
-          description: "Hurraaay! your campanion is created!",
+          title: `${"Character Created Succesfully!"}`,
+          description: "Hurraaay! your Character is created!",
         });
       }
       router.push("/");

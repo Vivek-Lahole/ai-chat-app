@@ -64,6 +64,7 @@ Introducing our AI-Chat-App where users can personalize their chat experience by
 - Admin and User based Model
 - Migration to Hugging Face LLM
 - Containerize Codebase with Docker
+- Implementing Redis for Fast Performance
 
 <!-- CONTACT -->
 

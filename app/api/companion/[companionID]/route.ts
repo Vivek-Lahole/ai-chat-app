@@ -3,6 +3,9 @@ import { auth, currentUser, redirectToSignIn } from "@clerk/nextjs";
 import prisma from "@/lib/Prisma";
 import { Configuration, OpenAIApi } from "openai-edge";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "langchain/vectorstores/pinecone";
+import { OpenAIEmbeddings } from "@langchain/openai";
 
 export async function PATCH(
   req: Request,
@@ -66,12 +69,29 @@ export async function DELETE(
   }
 
   try {
-    await prisma.companion.delete({
+    const companion = await prisma.companion.delete({
       where: {
         id: params.companionID,
         userId: userId,
       },
     });
+
+    const pinecone = new Pinecone({
+      apiKey: process.env.PINECONE_API_KEY!,
+      environment: process.env.PINECONE_ENVIRONMENT!,
+    });
+
+    const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
+    const pineconeStore = new PineconeStore(
+      new OpenAIEmbeddings({
+        openAIApiKey: process.env.OPENAI_API_KEY,
+      }),
+      { pineconeIndex }
+    );
+    await pineconeStore.delete({
+      ids: companion.vectorID,
+    });
+
     return NextResponse.json({ status: "success" });
   } catch (err) {
     return new NextResponse("Internal Server Error");
