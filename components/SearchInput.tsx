@@ -19,7 +19,7 @@ const SearchInput = () => {
       params.delete("query");
     }
     router.replace(`${pathName}?${params.toString()}`);
-  }, 200);
+  }, 500);
 
   return (
     <div className="relative">
