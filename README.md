@@ -63,7 +63,8 @@ Keep an eye on the updates page for the latest scoop. Cheers to creating somethi
 - Built and Completely Powered by Robust NextJS Framework
 - Based on Open-Source Codebases (Partially)
 - Aesthetic UI and Mobile responsive
-- Pwered by vercel
+- Powered by vercel
+- Containerised Codebase with Docker
 
 ## Upcoming Features
 
@@ -71,7 +72,6 @@ Keep an eye on the updates page for the latest scoop. Cheers to creating somethi
 - Migration to Supabase Open-Source Database
 - Admin and User based Model
 - Migration to Hugging Face LLM
-- Containerize Codebase with Docker
 - Upstash/Redis for performance Boost
 
 <!-- CONTACT -->
