@@ -47,7 +47,6 @@ Keep an eye on the updates page for the latest scoop. Cheers to creating somethi
 - Database: [Neon-postgres](https://console.neon.tech)
 - Framework: [Next.js](https://nextjs.org/)
 - VectorDB: [Pinecone](https://www.pinecone.io/)
-- LLM Framework: [Langchain.js](https://js.langchain.com/docs/)
 - Text model: [OpenAI-GPT-3.5](https://platform.openai.com/docs/models)
 - Text streaming: [ai sdk by @vercel](https://github.com/vercel-labs/ai)
 - Deployment: [Vercel](https://vercel.com/)
